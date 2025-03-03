@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
-import { counterStore } from '../../stores/counter.store';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { StoreService } from '../../../lib/store/store.service';
+import { CounterState } from '../../types/counter.types';
+import { Signal, computed } from '@angular/core';
 
 @Component({
     selector: 'app-display-counter',
     template: `
         <div class="counter">
-            <h2>Display Counter: {{ counterStore.getState().count }}</h2>
+            <h2>Display Counter: {{ count() }}</h2>
             <div class="buttons">
                 <button (click)="increment()">Increment</button>
                 <button (click)="decrement()">Decrement</button>
@@ -37,16 +39,34 @@ import { counterStore } from '../../stores/counter.store';
             background-color: #218838;
         }
     `],
-    standalone: true
+    standalone: true,
+    imports: []
 })
-export class DisplayCounter {
-    counterStore = counterStore;
+export class DisplayCounter implements OnInit {
+    count!: Signal<number>;
+
+    constructor(public storeService: StoreService) {}
+
+    ngOnInit() {
+        // Crear el store si no existe
+        this.storeService.createStore<CounterState>('counter', { count: 0 });
+        
+        // Obtener el signal del estado
+        const stateSignal = this.storeService.getStateSignal<CounterState>('counter');
+        
+        // Crear un signal derivado para el count
+        this.count = computed(() => stateSignal().count);
+    }
 
     increment() {
-        this.counterStore.updateState(state => ({ count: state.count + 1 }));
+        this.storeService.updateState<CounterState>('counter', (state: CounterState) => ({
+            count: state.count + 1
+        }));
     }
 
     decrement() {
-        this.counterStore.updateState(state => ({ count: state.count - 1 }));
+        this.storeService.updateState<CounterState>('counter', (state: CounterState) => ({
+            count: state.count - 1
+        }));
     }
 } 
