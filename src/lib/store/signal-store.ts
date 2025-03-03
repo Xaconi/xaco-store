@@ -2,9 +2,15 @@ import { Signal, signal } from '@angular/core';
 
 export class Store<T> {
     private _state: Signal<T>;
+    private static _stores: Map<string, Store<any>> = new Map();
 
-    constructor(initialState: T) {
-        this._state = signal(initialState);
+    constructor(initialState: T, private readonly _key: string) {
+        if (Store._stores.has(_key)) {
+            this._state = Store._stores.get(_key)!._state;
+        } else {
+            this._state = signal(initialState);
+            Store._stores.set(_key, this);
+        }
     }
 
     getState(): T {
@@ -18,5 +24,17 @@ export class Store<T> {
 
     getStateSignal(): Signal<T> {
         return this._state;
+    }
+
+    static getStore<T>(key: string): Store<T> | undefined {
+        return Store._stores.get(key);
+    }
+
+    static clearStore(key: string): void {
+        Store._stores.delete(key);
+    }
+
+    static clearAllStores(): void {
+        Store._stores.clear();
     }
 } 
