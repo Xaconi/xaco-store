@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CounterService } from '../../services/counter.service';
 import { computed, Signal } from '@angular/core';
+import { StoreService } from 'src/lib/store/store.service';
 
 @Component({
     selector: 'app-control-counter',
@@ -42,16 +43,17 @@ import { computed, Signal } from '@angular/core';
 })
 export class ControlCounter {
     count: Signal<number>;
+    public readonly increment: () => void;
+    public readonly decrement: () => void;
 
-    constructor(private counterService: CounterService) {
-        this.count = computed(() => this.counterService.state());
-    }
+    constructor(private storeService: StoreService) {
+        const store = this.storeService.getStore<number, {
+            increment: (state: number) => number,
+            decrement: (state: number) => number
+        }>('counter');
+        this.count = computed(() => store.state());
 
-    increment() {
-        this.counterService.increment();
-    }
-
-    decrement() {
-        this.counterService.decrement();
+        this.increment = store.increment;
+        this.decrement = store.decrement;
     }
 } 

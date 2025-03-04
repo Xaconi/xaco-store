@@ -27,14 +27,22 @@ export class StoreService {
                 actions
             });
         }
+        return this.getStore<T, A>(key);
+    }
+
+    getStore<T, A extends Record<string, (state: T, payload?: any) => T>>(
+        key: string
+    ): Store<T, A> {
+        const store = this._stores.get(key);
+        if (!store) {
+            throw new Error(`Store with key "${key}" not found. Create it first using createStore.`);
+        }
 
         const state = this.getStateSignal<T>(key);
-        const actionCreators = Object.keys(actions).reduce((acc, actionType) => {
+        const actionCreators = Object.keys(store.actions).reduce((acc, actionType) => {
             acc[actionType as keyof A] = (payload?: any) => {
-                const store = this._stores.get(key);
-                if (!store) return;
                 const currentState = store.state();
-                store.state.set(actions[actionType](currentState, payload));
+                store.state.set(store.actions[actionType](currentState, payload));
             };
             return acc;
         }, {} as { [K in keyof A]: (payload?: any) => void });

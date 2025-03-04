@@ -4,6 +4,11 @@ import { Signal } from '@angular/core';
 
 const STORE_KEY = 'counter';
 
+const counterActions = {
+  increment: (state: number) => state + 2,
+  decrement: (state: number) => state - 1
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,16 +18,10 @@ export class CounterService {
   public readonly decrement: () => void;
 
   constructor(private storeService: StoreService) {
-    const { state, increment, decrement } = this.storeService.createStore<number, {
-      increment: (state: number) => number;
-      decrement: (state: number) => number;
-    }>(
+    const { state, increment, decrement } = this.storeService.createStore<number, typeof counterActions>(
       STORE_KEY,
       0,
-      {
-        increment: (state) => state + 1,
-        decrement: (state) => state - 1
-      }
+      counterActions
     );
     
     this.state = state;

@@ -8,8 +8,8 @@ import { DisplayCounter } from './components/display-counter/display-counter.com
         <div class="container">
             <h1>Xaco Store Demo</h1>
             <div class="counters">
-                <app-control-counter></app-control-counter>
                 <app-display-counter></app-display-counter>
+                <app-control-counter></app-control-counter>
             </div>
         </div>
     `,
