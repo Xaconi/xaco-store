@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { StoreService } from '../../../lib/store/store.service';
-import { CounterState } from '../../types/counter.types';
-import { Signal, computed } from '@angular/core';
+import { Component } from '@angular/core';
+import { CounterService } from '../../services/counter.service';
+import { computed, Signal } from '@angular/core';
 
 @Component({
     selector: 'app-display-counter',
@@ -42,31 +41,18 @@ import { Signal, computed } from '@angular/core';
     standalone: true,
     imports: []
 })
-export class DisplayCounter implements OnInit {
-    count!: Signal<number>;
+export class DisplayCounter {
+    count: Signal<number>;
 
-    constructor(public storeService: StoreService) {}
-
-    ngOnInit() {
-        // Crear el store si no existe
-        this.storeService.createStore<CounterState>('counter', { count: 0 });
-        
-        // Obtener el signal del estado
-        const stateSignal = this.storeService.getStateSignal<CounterState>('counter');
-        
-        // Crear un signal derivado para el count
-        this.count = computed(() => stateSignal().count);
+    constructor(private counterService: CounterService) {
+        this.count = computed(() => this.counterService.state());
     }
 
     increment() {
-        this.storeService.updateState<CounterState>('counter', (state: CounterState) => ({
-            count: state.count + 1
-        }));
+        this.counterService.increment();
     }
 
     decrement() {
-        this.storeService.updateState<CounterState>('counter', (state: CounterState) => ({
-            count: state.count - 1
-        }));
+        this.counterService.decrement();
     }
 } 
