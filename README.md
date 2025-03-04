@@ -1,92 +1,129 @@
-# Xaco Store
+# 🚀 Xaco Store
 
-Una librería de gestión de estado ligera para Angular utilizando Signals.
+A lightweight state management library for Angular using Signals.
 
-## Instalación
+## ✨ Features
+
+- 🎯 Simple and intuitive API
+- 🔄 Reactive state management with Signals
+- 🎨 Type-safe with TypeScript
+- 🚀 Zero dependencies
+- 📦 Lightweight bundle size
+
+## 🛠️ Installation
 
 ```bash
 npm install xaco-store
 ```
 
-## Uso
+## 🎮 Usage
 
-### 1. Crear un Store
+### 1. Create a Store Service
 
 ```typescript
-import { Store } from 'xaco-store';
+import { Injectable } from '@angular/core';
+import { StoreService } from 'xaco-store';
 
-interface AppState {
-  count: number;
-  user: {
-    name: string;
-    email: string;
-  };
-}
+const STORE_KEY = 'counter';
 
-const initialState: AppState = {
-  count: 0,
-  user: {
-    name: '',
-    email: ''
-  }
+const counterActions = {
+  increment: (state: number) => state + 1,
+  decrement: (state: number) => state - 1
 };
 
-const store = new Store<AppState>(initialState);
+@Injectable({
+  providedIn: 'root'
+})
+export class CounterService {
+  public readonly state: Signal<number>;
+  public readonly increment: () => void;
+  public readonly decrement: () => void;
+
+  constructor(private storeService: StoreService) {
+    const { state, increment, decrement } = this.storeService.createStore(
+      STORE_KEY,
+      0,
+      counterActions
+    );
+    
+    this.state = state;
+    this.increment = increment;
+    this.decrement = decrement;
+  }
+}
 ```
 
-### 2. Obtener el Estado
+### 2. Use in Components
 
 ```typescript
-// Obtener el estado actual
-const currentState = store.getState();
-
-// Obtener el Signal del estado
-const stateSignal = store.getStateSignal();
-```
-
-### 3. Actualizar el Estado
-
-```typescript
-// Actualizar el estado
-store.updateState(state => ({
-  ...state,
-  count: state.count + 1
-}));
-```
-
-### 4. Usar en Componentes
-
-```typescript
-import { Component } from '@angular/core';
-import { Store } from 'xaco-store';
-
 @Component({
   selector: 'app-counter',
   template: `
-    <div>
-      <h2>Count: {{ store.getState().count }}</h2>
-      <button (click)="increment()">Increment</button>
+    <div class="counter">
+      <h2>Count: {{ count() }}</h2>
+      <div class="buttons">
+        <button (click)="increment()">+</button>
+        <button (click)="decrement()">-</button>
+      </div>
     </div>
   `
 })
 export class CounterComponent {
-  store = new Store<{ count: number }>({ count: 0 });
+  count: Signal<number>;
+
+  constructor(private counterService: CounterService) {
+    this.count = computed(() => this.counterService.state());
+  }
 
   increment() {
-    this.store.updateState(state => ({
-      count: state.count + 1
-    }));
+    this.counterService.increment();
+  }
+
+  decrement() {
+    this.counterService.decrement();
   }
 }
 ```
 
-## Características
+## 🎯 Live Examples
 
-- 🚀 Ligero y eficiente
-- 🔄 Integración nativa con Signals de Angular
-- 📦 Tipado fuerte con TypeScript
-- 🎯 API simple y directa
+### Basic Counter
+[![Edit Xaco Store Counter](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/xaco-store-counter-example)
 
-## Licencia
+### Todo List
+[![Edit Xaco Store Todo List](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/xaco-store-todo-example)
 
-MIT 
+## 📚 API Reference
+
+### StoreService
+
+#### createStore
+```typescript
+createStore(
+  key: string,
+  initialState: unknown,
+  actions: Record<string, (state: unknown, payload?: unknown) => unknown>
+): Store<typeof initialState, typeof actions>
+```
+
+#### getStore
+```typescript
+getStore(
+  key: string
+): Store<unknown, Record<string, (state: unknown, payload?: unknown) => unknown>>
+```
+
+#### getStateSignal
+```typescript
+getStateSignal(key: string): Signal<unknown>
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+
+Made with 💖 by @Xaconi
