@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ControlCounterComponent } from './components/control-counter/control-counter.component';
 import { DisplayCounterComponent } from './components/display-counter/display-counter.component';
+import { ResetCounterComponent } from './components/reset-counter/reset-counter.component';
 
 @Component({
     selector: 'lib-root',
@@ -8,8 +9,9 @@ import { DisplayCounterComponent } from './components/display-counter/display-co
         <div class="container">
             <h1>Xaco Store Demo</h1>
             <div class="counters">
-                <lib-display-counter></lib-display-counter>
-                <lib-control-counter></lib-control-counter>
+                <lib-display-counter />
+                <lib-control-counter />
+                <lib-reset-counter />
             </div>
         </div>
     `,
@@ -29,7 +31,7 @@ import { DisplayCounterComponent } from './components/display-counter/display-co
         `,
     ],
     standalone: true,
-    imports: [ControlCounterComponent, DisplayCounterComponent],
+    imports: [ControlCounterComponent, DisplayCounterComponent, ResetCounterComponent],
 })
 export class AppComponent {
     public title = 'xaco-store-demo';

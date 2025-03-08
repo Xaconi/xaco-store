@@ -5,6 +5,7 @@ export type StoreMap<T> = Map<
     {
         state: WritableSignal<T>;
         readonlyState: Signal<T>;
+        initialState: T;
         actions: Record<string, (state: T, payload?: any) => any>;
     }
 >;

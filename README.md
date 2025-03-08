@@ -33,13 +33,14 @@ import { StoreService } from 'xaco-store';
       <button (click)="increment()">+</button>
       <button (click)="decrement()">-</button>
       <button (click)="add(5)">Add 5</button>
+      <button (click)="resetStore()">Reset</button>
     </div>
   `,
   standalone: true
 })
 export class CounterComponent {
   private storeService = inject(StoreService);
-  private readonly { state, increment, decrement, add } = this.storeService.createStore<number>(
+  private readonly { state, increment, decrement, add, resetStore } = this.storeService.createStore<number>(
     'counter',
     0,
     {
@@ -73,7 +74,7 @@ import { StoreService } from 'xaco-store';
 export class CounterDisplayComponent {
   private storeService = inject(StoreService);
   private readonly { state } = this.storeService.getStore<number>('counter');
-  
+
   // State is readonly, can only be modified through store actions
   doubleCount = computed(() => this.state() * 2);
 }
@@ -92,6 +93,7 @@ createStore<T>(
   actions: Record<string, (state: T, payload?: any) => T>
 ): {
   state: Signal<T>;  // Readonly signal
+  resetStore: () => void;  // Reset state to initial value
   [K in keyof typeof actions]: (payload?: any) => void;
 }
 ```
@@ -105,6 +107,7 @@ createStore<T>(
 #### Returns
 
 - `state`: Readonly signal containing the current state
+- `resetStore`: Function to reset state to its initial value
 - Action methods: Methods corresponding to each action defined
 
 ### StoreService.getStore
@@ -114,6 +117,7 @@ Retrieves an existing store by its key.
 ```typescript
 getStore<T>(key: string): {
   state: Signal<T>;  // Readonly signal
+  resetStore: () => void;  // Reset state to initial value
   [K in keyof typeof actions]: (payload?: any) => void;
 }
 ```
@@ -126,6 +130,7 @@ The store follows these principles to ensure safe state management:
 - Actions are pure functions that receive the current state and an optional payload, and return a new state
 - The state signal is readonly, preventing accidental mutations
 - Each action creates a new state instead of mutating the existing one
+- State can be reset to its initial value at any time
 
 ## 🤝 Contributing
 

@@ -13,6 +13,7 @@ export class StoreService {
             this._stores.set(key, {
                 state,
                 readonlyState: state.asReadonly(),
+                initialState,
                 actions,
             });
         }
@@ -44,6 +45,7 @@ export class StoreService {
 
         return {
             state: store.readonlyState,
+            resetStore: () => store.state.set(store.initialState),
             ...actionCreators,
         } as Store<T>;
     }
