@@ -13,33 +13,35 @@ import { computed, Signal } from '@angular/core';
             </div>
         </div>
     `,
-    styles: [`
-        .counter {
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #f8f9fa;
-        }
-        .buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-    `],
+    styles: [
+        `
+            .counter {
+                margin: 20px;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                background-color: #f8f9fa;
+            }
+            .buttons {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+            }
+            button {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                background-color: #28a745;
+                color: white;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #218838;
+            }
+        `,
+    ],
     standalone: true,
-    imports: []
+    imports: [],
 })
 export class DisplayCounter {
     count: Signal<number>;
@@ -55,4 +57,4 @@ export class DisplayCounter {
     decrement() {
         this.counterService.decrement();
     }
-} 
+}

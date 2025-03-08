@@ -7,7 +7,11 @@
         "build": "ng build",
         "build:lib": "ng build --configuration production xaco-store && npm run copy:assets",
         "copy:assets": "node scripts/copy-assets.js",
-        "watch": "ng build --watch --configuration development"
+        "watch": "ng build --watch --configuration development",
+        "lint": "ng lint",
+        "lint:fix": "ng lint --fix",
+        "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
+        "format:check": "prettier --check \"src/**/*.{ts,html,scss}\""
     },
     "private": true,
     "keywords": [
@@ -33,9 +37,19 @@
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^17.1.0",
+        "@angular-eslint/builder": "^17.2.1",
+        "@angular-eslint/eslint-plugin": "^17.2.1",
+        "@angular-eslint/eslint-plugin-template": "^17.2.1",
+        "@angular-eslint/schematics": "^17.2.1",
+        "@angular-eslint/template-parser": "^17.2.1",
         "@angular/cli": "^17.1.0",
         "@angular/compiler-cli": "^17.1.0",
+        "@typescript-eslint/eslint-plugin": "^7.1.0",
+        "@typescript-eslint/parser": "^7.1.0",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
         "ng-packagr": "^19.2.0",
+        "prettier": "^3.2.5",
         "typescript": "~5.3.2"
     }
 }

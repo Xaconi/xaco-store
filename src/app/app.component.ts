@@ -3,7 +3,7 @@ import { ControlCounter } from './components/control-counter/control-counter.com
 import { DisplayCounter } from './components/display-counter/display-counter.component';
 
 @Component({
-    selector: 'app-root',
+    selector: 'lib-root',
     template: `
         <div class="container">
             <h1>Xaco Store Demo</h1>
@@ -13,22 +13,24 @@ import { DisplayCounter } from './components/display-counter/display-counter.com
             </div>
         </div>
     `,
-    styles: [`
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
-        .counters {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-    `],
+    styles: [
+        `
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                text-align: center;
+            }
+            .counters {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+        `,
+    ],
     standalone: true,
-    imports: [ControlCounter, DisplayCounter]
+    imports: [ControlCounter, DisplayCounter],
 })
 export class AppComponent {
-    title = 'xaco-store-demo';
-} 
+    public title = 'xaco-store-demo';
+}

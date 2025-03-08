@@ -1,10 +1,13 @@
 {
     "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "explicit"
+        "source.fixAll.eslint": "always",
+        "source.organizeImports": "always"
     },
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
+    "eslint.validate": ["typescript", "javascript", "html"],
     "files.associations": {
         "*.scss": "scss"
     },
@@ -16,5 +19,9 @@
     },
     "[scss]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "prettier.requireConfig": true
 }

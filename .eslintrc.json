@@ -1,26 +1,43 @@
 {
     "root": true,
-    "ignorePatterns": [
-        "projects/**/*"
-    ],
+    "ignorePatterns": ["projects/**/*", "dist/**/*", "coverage/**/*"],
     "overrides": [
         {
-            "files": [
-                "*.ts"
-            ],
+            "files": ["*.ts"],
             "extends": [
                 "eslint:recommended",
                 "plugin:@typescript-eslint/recommended",
+                "plugin:@typescript-eslint/recommended-requiring-type-checking",
                 "plugin:@angular-eslint/recommended",
                 "plugin:@angular-eslint/template/process-inline-templates",
                 "prettier"
             ],
             "rules": {
+                "@typescript-eslint/explicit-member-accessibility": [
+                    "error",
+                    {
+                        "accessibility": "explicit",
+                        "overrides": {
+                            "constructors": "no-public"
+                        }
+                    }
+                ],
+                "@typescript-eslint/explicit-function-return-type": ["error"],
+                "@typescript-eslint/no-explicit-any": "warn",
+                "@typescript-eslint/no-unused-vars": "error",
+                "@typescript-eslint/naming-convention": [
+                    "error",
+                    {
+                        "selector": "interface",
+                        "format": ["PascalCase"],
+                        "prefix": ["I"]
+                    }
+                ],
                 "@angular-eslint/directive-selector": [
                     "error",
                     {
                         "type": "attribute",
-                        "prefix": "app",
+                        "prefix": "lib",
                         "style": "camelCase"
                     }
                 ],
@@ -28,29 +45,26 @@
                     "error",
                     {
                         "type": "element",
-                        "prefix": "app",
+                        "prefix": "lib",
                         "style": "kebab-case"
                     }
                 ]
             },
             "parserOptions": {
-                "project": [
-                    "tsconfig.json",
-                    "tsconfig.app.json",
-                    "tsconfig.spec.json"
-                ]
+                "project": ["tsconfig.json", "tsconfig.app.json", "tsconfig.spec.json"]
             }
         },
         {
-            "files": [
-                "*.html"
-            ],
+            "files": ["*.html"],
             "extends": [
                 "plugin:@angular-eslint/template/recommended",
                 "plugin:@angular-eslint/template/accessibility",
                 "prettier"
             ],
-            "rules": {}
+            "rules": {
+                "@angular-eslint/template/no-any": "error",
+                "@angular-eslint/template/no-duplicate-attributes": "error"
+            }
         }
     ]
 }

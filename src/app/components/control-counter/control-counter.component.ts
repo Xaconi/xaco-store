@@ -13,32 +13,34 @@ import { StoreService } from 'src/lib/store/store.service';
             </div>
         </div>
     `,
-    styles: [`
-        .counter {
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-        .buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    `],
+    styles: [
+        `
+            .counter {
+                margin: 20px;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+            }
+            .buttons {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+            }
+            button {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #0056b3;
+            }
+        `,
+    ],
     standalone: true,
-    imports: []
+    imports: [],
 })
 export class ControlCounter {
     count: Signal<number>;
@@ -46,10 +48,14 @@ export class ControlCounter {
     public readonly decrement: () => void;
 
     constructor(private storeService: StoreService) {
-        const { state: counterState, increment, decrement } = this.storeService.getStore<number>('counter');
+        const {
+            state: counterState,
+            increment,
+            decrement,
+        } = this.storeService.getStore<number>('counter');
         this.count = computed(() => counterState());
 
         this.increment = increment;
         this.decrement = decrement;
     }
-} 
+}
