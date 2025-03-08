@@ -1,0 +1,38 @@
+{
+    "name": "xaco-store",
+    "version": "0.1.0",
+    "description": "A lightweight state management library for Angular using Signals",
+    "author": "Xaconi",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Xaconi/xaco-store"
+    },
+    "homepage": "https://github.com/Xaconi/xaco-store#readme",
+    "bugs": {
+        "url": "https://github.com/Xaconi/xaco-store/issues"
+    },
+    "keywords": [
+        "angular",
+        "state-management",
+        "state",
+        "store",
+        "signals",
+        "rxjs",
+        "typescript",
+        "angular-state",
+        "angular-store",
+        "angular-signals",
+        "reactive",
+        "immutable",
+        "flux",
+        "redux-alternative"
+    ],
+    "peerDependencies": {
+        "@angular/common": "^17.1.0",
+        "@angular/core": "^17.1.0"
+    },
+    "dependencies": {
+        "tslib": "^2.3.0"
+    },
+    "sideEffects": false
+}
