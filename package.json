@@ -1,6 +1,6 @@
 {
     "name": "xaco-store",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "Una librería de gestión de estado ligera para Angular utilizando Signals",
     "scripts": {
         "start": "ng serve",
