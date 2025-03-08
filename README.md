@@ -2,6 +2,8 @@
 
 A lightweight state management library for Angular using Signals.
 
+![test](https://badgen.net/bundlephobia/min/xaco-store)
+
 ## ✨ Features
 
 - 🎯 Simple and intuitive API
