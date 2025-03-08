@@ -1,56 +1,50 @@
 import { Injectable } from '@angular/core';
 import { Signal, WritableSignal, signal } from '@angular/core';
-
-type Store<T, A extends Record<string, (state: T, payload?: any) => T>> = {
-  state: Signal<T>;
-} & {
-  [K in keyof A]: (payload?: any) => void;
-};
+import { StoreAction, StoreMap, Store } from '../models/store';
 
 @Injectable({
     providedIn: 'root'
 })
 export class StoreService {
-    private _stores: Map<string, { 
-        state: WritableSignal<any>;
-        actions: Record<string, (state: any, payload?: any) => any>;
-    }> = new Map();
+    private _stores: StoreMap<any> = new Map();
 
-    createStore<T, A extends Record<string, (state: T, payload?: any) => T>>(
+    createStore<T>(
         key: string, 
         initialState: T, 
-        actions: A
-    ): Store<T, A> {
+        actions: StoreAction<T>
+    ): Store<T> {
         if (!this._stores.has(key)) {
+            const state = signal(initialState);
             this._stores.set(key, { 
-                state: signal(initialState),
+                state,
+                readonlyState: state.asReadonly(),
                 actions
             });
         }
-        return this.getStore<T, A>(key);
+        return this.getStore<T>(key);
     }
 
-    getStore<T, A extends Record<string, (state: T, payload?: any) => T>>(
+    getStore<T>(
         key: string
-    ): Store<T, A> {
+    ): Store<T> {
         const store = this._stores.get(key);
         if (!store) {
             throw new Error(`Store with key "${key}" not found. Create it first using createStore.`);
         }
 
-        const state = this.getStateSignal<T>(key);
-        const actionCreators = Object.keys(store.actions).reduce((acc, actionType) => {
-            acc[actionType as keyof A] = (payload?: any) => {
+        const actionCreators = Object.keys(store.actions).reduce((acc, actionIndex) => {
+            acc[actionIndex as keyof StoreAction<T>] = (payload?: any) => {
                 const currentState = store.state();
-                store.state.set(store.actions[actionType](currentState, payload));
+                const stateActionResult = store.actions[actionIndex](currentState, payload);
+                store.state.set(stateActionResult);
             };
             return acc;
-        }, {} as { [K in keyof A]: (payload?: any) => void });
+        }, {} as { [K in keyof StoreAction<T>]: (payload?: any) => void });
 
         return {
-            state,
+            state: store.readonlyState,
             ...actionCreators
-        } as Store<T, A>;
+        } as Store<T>;
     }
 
     getStateSignal<T>(key: string): Signal<T> {
@@ -58,7 +52,7 @@ export class StoreService {
         if (!store) {
             throw new Error(`Store with key "${key}" not found`);
         }
-        return store.state;
+        return store.readonlyState;
     }
 
     clearStore(key: string): void {

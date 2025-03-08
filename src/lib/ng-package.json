@@ -3,5 +3,8 @@
     "dest": "../../dist/xaco-store",
     "lib": {
         "entryFile": "public-api.ts"
-    }
+    },
+    "allowedNonPeerDependencies": [
+        "tslib"
+    ]
 }

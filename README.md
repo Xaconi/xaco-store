@@ -7,6 +7,7 @@ A lightweight state management library for Angular using Signals.
 - 🎯 Simple and intuitive API
 - 🔄 Reactive state management with Signals
 - 🎨 Type-safe with TypeScript
+- 🔒 Immutable state by design
 - 🚀 Zero dependencies
 - 📦 Lightweight bundle size
 
@@ -18,105 +19,113 @@ npm install xaco-store
 
 ## 🎮 Usage
 
-### 1. Create a Store Service
+### Create a Store
 
 ```typescript
-import { Injectable } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { StoreService } from 'xaco-store';
 
-const STORE_KEY = 'counter';
-
-const counterActions = {
-  increment: (state: number) => state + 1,
-  decrement: (state: number) => state - 1
-};
-
-@Injectable({
-  providedIn: 'root'
-})
-export class CounterService {
-  public readonly state: Signal<number>;
-  public readonly increment: () => void;
-  public readonly decrement: () => void;
-
-  constructor(private storeService: StoreService) {
-    const { state, increment, decrement } = this.storeService.createStore(
-      STORE_KEY,
-      0,
-      counterActions
-    );
-    
-    this.state = state;
-    this.increment = increment;
-    this.decrement = decrement;
-  }
-}
-```
-
-### 2. Use in Components
-
-```typescript
 @Component({
   selector: 'app-counter',
   template: `
     <div class="counter">
       <h2>Count: {{ count() }}</h2>
-      <div class="buttons">
-        <button (click)="increment()">+</button>
-        <button (click)="decrement()">-</button>
-      </div>
+      <button (click)="increment()">+</button>
+      <button (click)="decrement()">-</button>
+      <button (click)="add(5)">Add 5</button>
     </div>
-  `
+  `,
+  standalone: true
 })
 export class CounterComponent {
-  count: Signal<number>;
+  private storeService = inject(StoreService);
+  private readonly { state, increment, decrement, add } = this.storeService.createStore<number>(
+    'counter',
+    0,
+    {
+      // Simple actions
+      increment: state => state + 1,
+      decrement: state => state - 1,
+      // Action with payload
+      add: (state, amount: number) => state + amount
+    }
+  );
 
-  constructor(private counterService: CounterService) {
-    this.count = computed(() => this.counterService.state());
-  }
-
-  increment() {
-    this.counterService.increment();
-  }
-
-  decrement() {
-    this.counterService.decrement();
-  }
+  count = this.state;
 }
 ```
 
-## 🎯 Live Examples
+### Subscribe to Store State
 
-### Basic Counter
-[![Edit Xaco Store Counter](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/xaco-store-counter-example)
+```typescript
+import { Component, computed, inject } from '@angular/core';
+import { StoreService } from 'xaco-store';
 
-### Todo List
-[![Edit Xaco Store Todo List](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/xaco-store-todo-example)
+@Component({
+  selector: 'app-counter-display',
+  template: `
+    <div class="counter-display">
+      <h3>Double of count is: {{ doubleCount() }}</h3>
+    </div>
+  `,
+  standalone: true
+})
+export class CounterDisplayComponent {
+  private storeService = inject(StoreService);
+  private readonly { state } = this.storeService.getStore<number>('counter');
+  
+  // State is readonly, can only be modified through store actions
+  doubleCount = computed(() => this.state() * 2);
+}
+```
 
 ## 📚 API Reference
 
-### StoreService
+### StoreService.createStore
 
-#### createStore
+Creates a new store with the specified key, initial state, and actions. Types are automatically inferred from the initial state.
+
 ```typescript
-createStore(
+createStore<T>(
   key: string,
-  initialState: unknown,
-  actions: Record<string, (state: unknown, payload?: unknown) => unknown>
-): Store<typeof initialState, typeof actions>
+  initialState: T,
+  actions: Record<string, (state: T, payload?: any) => T>
+): {
+  state: Signal<T>;  // Readonly signal
+  [K in keyof typeof actions]: (payload?: any) => void;
+}
 ```
 
-#### getStore
+#### Parameters
+
+- `key`: Unique identifier for the store
+- `initialState`: Initial state value
+- `actions`: Pure functions that receive current state and return new state.
+
+#### Returns
+
+- `state`: Readonly signal containing the current state
+- Action methods: Methods corresponding to each action defined
+
+### StoreService.getStore
+
+Retrieves an existing store by its key.
+
 ```typescript
-getStore(
-  key: string
-): Store<unknown, Record<string, (state: unknown, payload?: unknown) => unknown>>
+getStore<T>(key: string): {
+  state: Signal<T>;  // Readonly signal
+  [K in keyof typeof actions]: (payload?: any) => void;
+}
 ```
 
-#### getStateSignal
-```typescript
-getStateSignal(key: string): Signal<unknown>
-```
+## 🔒 State Management
+
+The store follows these principles to ensure safe state management:
+
+- State is immutable and can only be modified through defined actions
+- Actions are pure functions that receive the current state and an optional payload, and return a new state
+- The state signal is readonly, preventing accidental mutations
+- Each action creates a new state instead of mutating the existing one
 
 ## 🤝 Contributing
 
@@ -124,6 +133,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 Made with 💖 by @Xaconi

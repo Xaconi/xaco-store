@@ -1,10 +1,12 @@
 {
     "name": "xaco-store",
-    "version": "0.0.1",
+    "version": "0.1.2",
     "description": "Una librería de gestión de estado ligera para Angular utilizando Signals",
     "scripts": {
         "start": "ng serve",
         "build": "ng build",
+        "build:lib": "ng build --configuration production xaco-store && npm run copy:assets",
+        "copy:assets": "node scripts/copy-assets.js",
         "watch": "ng build --watch --configuration development"
     },
     "private": true,
