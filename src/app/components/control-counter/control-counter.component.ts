@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
-import { computed, Signal } from '@angular/core';
+import { Component, computed, Signal } from '@angular/core';
 import { StoreService } from 'src/lib/store/store.service';
 
 @Component({
-    selector: 'app-control-counter',
+    selector: 'lib-control-counter',
     template: `
         <div class="counter">
             <h2>Control Counter: {{ count() }}</h2>
@@ -42,8 +41,8 @@ import { StoreService } from 'src/lib/store/store.service';
     standalone: true,
     imports: [],
 })
-export class ControlCounter {
-    count: Signal<number>;
+export class ControlCounterComponent {
+    public count: Signal<number>;
     public readonly increment: () => void;
     public readonly decrement: () => void;
 

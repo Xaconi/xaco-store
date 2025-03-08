@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, computed, Signal } from '@angular/core';
 import { CounterService } from '../../services/counter.service';
-import { computed, Signal } from '@angular/core';
 
 @Component({
-    selector: 'app-display-counter',
+    selector: 'lib-display-counter',
     template: `
         <div class="counter">
             <h2>Display Counter: {{ count() }}</h2>
@@ -43,18 +42,18 @@ import { computed, Signal } from '@angular/core';
     standalone: true,
     imports: [],
 })
-export class DisplayCounter {
-    count: Signal<number>;
+export class DisplayCounterComponent {
+    public count: Signal<number>;
 
     constructor(private counterService: CounterService) {
         this.count = computed(() => this.counterService.state());
     }
 
-    increment() {
+    public increment(): void {
         this.counterService.increment();
     }
 
-    decrement() {
+    public decrement(): void {
         this.counterService.decrement();
     }
 }
