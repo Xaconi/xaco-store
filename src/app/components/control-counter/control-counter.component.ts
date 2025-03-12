@@ -1,5 +1,5 @@
 import { Component, computed, Signal } from '@angular/core';
-import { StoreService } from 'src/lib/store/store.service';
+import { StoreService } from '../../../lib/store/store.service';
 
 @Component({
     selector: 'lib-control-counter',
