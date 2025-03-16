@@ -12,6 +12,7 @@ A lightweight state management library for Angular using Signals.
 - 🔒 Immutable state by design
 - 🚀 Zero dependencies
 - 📦 Lightweight bundle size
+- 🔌 Base and custom middlewares support
 
 ## 🛠️ Installation
 
@@ -122,6 +123,83 @@ getStore<T>(key: string): {
   resetStore: () => void;  // Reset state to initial value
   [K in keyof typeof actions]: (payload?: any) => void;
 }
+```
+
+## 🔌 Middleware Support
+
+Xaco Store supports middlewares to extend its functionality. Middlewares are functions that receive the current state, the next state, the action name, and an optional action payload, and can perform side effects.
+
+### Using Built-in Middlewares
+
+#### Logging Middleware
+The logging middleware helps debug state changes by logging actions and state to the console:
+
+```typescript
+import { StoreService } from 'xaco-store';
+import { loggingMiddleware } from 'xaco-store/middlewares';
+
+@Component({
+  // ...
+})
+export class CounterComponent {
+  private storeService = inject(StoreService);
+  private readonly { state, increment } = this.storeService.createStore<number>(
+    'counter',
+    0,
+    {
+      increment: state => state + 1
+    },
+    [loggingMiddleware] // Add the middleware here
+  );
+
+  count = this.state;
+}
+```
+
+When an action is dispatched, you'll see in the console:
+```
+Current state: 0
+Next state: 1
+Action: increment
+```
+
+### Creating Custom Middlewares
+
+You can create your own middlewares to add custom functionality:
+
+```typescript
+type Middleware<T> = (currentState: T, nextState: T, action: string, payload?: any) => T;
+
+// Example: Custom logging middleware
+function customLoggingMiddleware<T>(currentState: T, nextState: T, action: string, payload?: any): T {
+  console.log(`[${new Date().toISOString()}] ${action}:`, state);
+  return state;
+}
+
+// Using the custom middleware
+const { state, increment } = storeService.createStore<number>(
+  'counter',
+  0,
+  {
+    increment: state => state + 1
+  },
+  [customLoggingMiddleware]
+);
+```
+
+### Combining Multiple Middlewares
+
+Middlewares are executed in the order they are provided:
+
+```typescript
+const { state, increment } = storeService.createStore<number>(
+  'counter',
+  0,
+  {
+    increment: state => state + 1
+  },
+  [loggingMiddleware, customLoggingMiddleware]
+);
 ```
 
 ## 🔒 State Management
