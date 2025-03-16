@@ -1,5 +1,5 @@
 import { Injectable, Signal, signal } from '@angular/core';
-import { Store, StoreAction, StoreMap } from '../models/store';
+import { Middleware, Store, StoreAction, StoreMap } from '../models/store';
 
 @Injectable({
     providedIn: 'root',
@@ -7,7 +7,7 @@ import { Store, StoreAction, StoreMap } from '../models/store';
 export class StoreService {
     private _stores: StoreMap<any> = new Map();
 
-    public createStore<T>(key: string, initialState: T, actions: StoreAction<T>): Store<T> {
+    public createStore<T>(key: string, initialState: T, actions: StoreAction<T>, middlewares?: Array<Middleware<T>>): Store<T> {
         if (!this._stores.has(key)) {
             const state = signal(initialState);
             this._stores.set(key, {
@@ -15,6 +15,7 @@ export class StoreService {
                 readonlyState: state.asReadonly(),
                 initialState,
                 actions,
+                middlewares
             });
         }
         return this.getStore<T>(key);
@@ -32,10 +33,18 @@ export class StoreService {
             (acc, actionIndex) => {
                 acc[actionIndex] = (payload?: unknown): void => {
                     const currentState = store.state() as T;
+
                     const stateActionResult = store.actions[actionIndex](
                         currentState,
                         payload
                     ) as T;
+
+                    if (store.middlewares) {
+                        store.middlewares.forEach((middleware) => {
+                            middleware(currentState, stateActionResult, actionIndex, payload);
+                        });
+                    }
+
                     store.state.set(stateActionResult);
                 };
                 return acc;

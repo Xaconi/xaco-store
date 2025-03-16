@@ -1,6 +1,5 @@
-import { Injectable, computed } from '@angular/core';
+import { Injectable, Signal, computed } from '@angular/core';
 import { StoreService } from '../../lib/store/store.service';
-import { Signal } from '@angular/core';
 
 const STORE_KEY = 'counter';
 

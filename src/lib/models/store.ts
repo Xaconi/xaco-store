@@ -7,6 +7,7 @@ export type StoreMap<T> = Map<
         readonlyState: Signal<T>;
         initialState: T;
         actions: Record<string, (state: T, payload?: any) => any>;
+        middlewares?: Array<Middleware<T>>;
     }
 >;
 
@@ -17,3 +18,5 @@ export type Store<T> = {
 } & {
     [K in keyof StoreAction<T>]: (payload?: any) => void;
 };
+
+export type Middleware<T> = (currentState: T, nextState: T, action: string, payload?: any) => void;
